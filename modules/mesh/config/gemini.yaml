@@ -1,0 +1,79 @@
+# Gemini — Speed/Long-Context Agent
+system:
+  name: gemini
+  display_name: "Gemini"
+  role: "Fast responses, long context, multimodal"
+  version: "2.5 Pro / Flash"
+
+auth:
+  method: free_tier
+  provider: google
+  plan: "Google AI Studio Free Tier"
+  api_key_env: GEMINI_API_KEY
+  cost_model: free
+
+runtime:
+  cli: $HOME/.nvm/versions/node/v22.22.0/bin/gemini
+  config_files:
+    - ~/.gemini/settings.json
+  context_window: 1000000  # 1M tokens — largest in mesh
+  working_directory: ~/.openclaw/workspace
+
+models:
+  flash:
+    name: "Gemini 2.5 Flash"
+    daily_limit: 500
+    speed: fastest
+    use_for: "Quick answers, simple tasks, speed-critical"
+  pro:
+    name: "Gemini 2.5 Pro"
+    daily_limit: 25
+    speed: moderate
+    thinking_mode: true
+    use_for: "Deep reasoning, complex analysis, thinking mode"
+
+capabilities:
+  primary:
+    - speed
+    - long_context_analysis
+    - multimodal
+    - video_analysis
+    - audio_analysis
+    - image_analysis
+    - google_search_grounding
+  secondary:
+    - coding
+    - reasoning
+    - summarization
+  cannot:
+    - mcp_access
+    - background_tasks
+    - 24_7_monitoring
+
+cost_routing:
+  priority_for:
+    long_context: 1  # PRIMARY (1M context)
+    multimodal: 1    # PRIMARY
+    quick_answers: 2
+    coding: 2
+    research: 4
+    reasoning: 2
+  never_use_for:
+    - background_monitoring
+
+limits:
+  flash:
+    daily: 500
+    track_in: mesh/usage.json
+    alert_at: 400  # Alert at 80%
+  pro:
+    daily: 25
+    track_in: mesh/usage.json
+    alert_at: 20
+  notes: "Free tier — daily limits reset at midnight PT"
+
+health_check:
+  command: "gemini --version"
+  expected: "exit code 0"
+
+last_refresh: "2026-03-30 12:03:41"

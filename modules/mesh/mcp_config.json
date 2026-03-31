@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "ai-mesh": {
+      "command": "python3",
+      "args": ["$HOME/.openclaw/workspace/mesh/mcp_server.py"],
+      "env": {}
+    },
+    "perplexity": {
+      "command": "npx",
+      "args": ["-y", "@nicepkg/perplexity-mcp"],
+      "env": {
+        "PERPLEXITY_API_KEY": "${PERPLEXITY_API_KEY}"
+      }
+    }
+  }
+}

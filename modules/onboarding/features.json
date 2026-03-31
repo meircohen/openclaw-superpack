@@ -1,0 +1,106 @@
+[
+  {
+    "id": "specialist_agents",
+    "name": "55 Specialist Agents",
+    "one_liner": "Ask anything and it routes to the right expert — coding, finance, fitness, legal, and more",
+    "day": 1,
+    "triggers": ["help", "who can", "specialist", "agent", "expert"]
+  },
+  {
+    "id": "intelligence_pipeline",
+    "name": "Intelligence Pipeline",
+    "one_liner": "Scans HN, GitHub, Reddit, Bluesky, and more for AI news while you sleep",
+    "day": 3,
+    "triggers": ["news", "what's new", "trending", "intelligence", "scan"]
+  },
+  {
+    "id": "mesh_network",
+    "name": "AI Mesh Network",
+    "one_liner": "Routes tasks to the cheapest AI system automatically — subscription first, API tokens last",
+    "day": 7,
+    "triggers": ["cost", "expensive", "tokens", "billing", "route", "mesh"]
+  },
+  {
+    "id": "heartbeat_system",
+    "name": "Heartbeat System",
+    "one_liner": "Runs health checks, processes handoffs, and maintains memory every 30 minutes — fully autonomous",
+    "day": 5,
+    "triggers": ["health", "status", "heartbeat", "monitoring"]
+  },
+  {
+    "id": "delegation_layer",
+    "name": "Delegation Layer",
+    "one_liner": "Delegates heavy work to Claude Code, Codex, or Gemini on subscription so your main agent stays lean",
+    "day": 10,
+    "triggers": ["delegate", "dispatch", "claude code", "codex", "subscription"]
+  },
+  {
+    "id": "mcp_servers",
+    "name": "MCP Server Ecosystem",
+    "one_liner": "Context-mode, Perplexity, Claude Peers, and more — tools that make your agents smarter",
+    "day": 14,
+    "triggers": ["mcp", "tools", "context", "perplexity", "peers"]
+  },
+  {
+    "id": "container_isolation",
+    "name": "Coasts (Container Isolation)",
+    "one_liner": "Run multiple agents in parallel without port conflicts or state leaks — each gets its own Docker environment",
+    "day": 21,
+    "triggers": ["docker", "container", "isolation", "parallel", "coasts"]
+  },
+  {
+    "id": "x_twitter",
+    "name": "X/Twitter Automation",
+    "one_liner": "Post, engage, and monitor your X account — queue posts, auto-reply, track growth",
+    "day": 12,
+    "triggers": ["tweet", "twitter", "post", "x.com", "social media"],
+    "requires": "twitter_api_key"
+  },
+  {
+    "id": "whoop_integration",
+    "name": "WHOOP Health Integration",
+    "one_liner": "Your recovery score, HRV, sleep data — accessible to any agent for health-aware decisions",
+    "day": 15,
+    "triggers": ["whoop", "recovery", "hrv", "sleep", "health", "fitness"],
+    "requires": "whoop_api"
+  },
+  {
+    "id": "telegram_bridge",
+    "name": "Telegram Bridge",
+    "one_liner": "Chat with your AI from Telegram — DMs, groups, and even voice messages",
+    "day": 2,
+    "triggers": ["telegram", "message", "chat", "mobile"],
+    "requires": "telegram_bot_token"
+  },
+  {
+    "id": "email_watchdog",
+    "name": "Email Watchdog",
+    "one_liner": "Monitors your inbox for priority emails and alerts you about what matters",
+    "day": 8,
+    "triggers": ["email", "inbox", "gmail", "urgent mail"],
+    "requires": "gmail_access"
+  },
+  {
+    "id": "btc_intelligence",
+    "name": "BTC Market Intelligence",
+    "one_liner": "Daily crypto market analysis — price movements, Fear/Greed index, mempool status",
+    "day": 18,
+    "triggers": ["bitcoin", "btc", "crypto", "market"],
+    "requires": "web_search"
+  },
+  {
+    "id": "vault_system",
+    "name": "Document Vault",
+    "one_liner": "Auto-files documents from Google Drive, classifies them, and keeps everything organized",
+    "day": 25,
+    "triggers": ["document", "file", "vault", "organize", "drive"],
+    "requires": "google_drive"
+  },
+  {
+    "id": "repo_raids",
+    "name": "Repo Raids",
+    "one_liner": "Audit open source repos in parallel — extract patterns, evaluate tools, build your knowledge base",
+    "day": 20,
+    "triggers": ["repo", "github", "audit", "raid", "open source"]
+  }
+]

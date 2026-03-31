@@ -1,0 +1,69 @@
+# Codex — Deep Reasoning Agent
+system:
+  name: codex
+  display_name: "Codex"
+  role: "Async code generation, deep reasoning"
+  version: "gpt-5.4"
+
+auth:
+  method: subscription
+  provider: openai
+  plan: "OpenAI Pro"
+  cost_model: flat_rate
+  marginal_cost: 0
+
+runtime:
+  cli: $HOME/.nvm/versions/node/v22.22.0/bin/codex
+  config_files:
+    - ~/.codex/config.toml
+  working_directory: ~/.openclaw/workspace
+  context_window: 200000
+
+capabilities:
+  primary:
+    - deep_reasoning
+    - code_generation
+    - feature_branches
+    - test_suites
+    - parallel_code_tasks
+    - async_execution
+  secondary:
+    - research_via_mcp
+    - analysis
+  cannot:
+    - interactive_sessions
+    - mcp_direct_access
+    - background_tasks
+    - multimodal
+
+reasoning_modes:
+  - name: xhigh
+    description: "Maximum reasoning depth"
+    use_for: "Complex architecture, deep analysis"
+  - name: high
+    description: "Standard deep reasoning"
+    use_for: "Feature implementation, debugging"
+  - name: medium
+    description: "Balanced speed/depth"
+    use_for: "Routine code generation"
+
+cost_routing:
+  priority_for:
+    coding: 3
+    reasoning: 1  # PRIMARY for deep reasoning
+    long_context: 3
+  never_use_for:
+    - quick_answers
+    - multimodal
+    - background_monitoring
+
+limits:
+  daily: null
+  monthly: null
+  notes: "Flat rate subscription — use freely for reasoning tasks"
+
+health_check:
+  command: "codex --version"
+  expected: "exit code 0"
+
+last_refresh: "2026-03-30 12:03:40"
