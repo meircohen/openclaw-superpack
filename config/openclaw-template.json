@@ -1,47 +1,51 @@
 {
-  "version": "1.0",
-  "user": {
-    "name": "{{USER_NAME}}",
-    "email": "{{USER_EMAIL}}",
-    "timezone": "{{TIMEZONE}}",
-    "location": "{{USER_LOCATION}}"
-  },
-  "workspace": {
-    "path": "$HOME/.openclaw/workspace",
-    "agents_path": "$HOME/.openclaw/agents",
-    "mesh_enabled": true,
-    "intelligence_enabled": true,
-    "heartbeat_enabled": true
-  },
-  "integrations": {
-    "telegram": {
-      "enabled": false,
-      "bot_token": "{{TELEGRAM_BOT_TOKEN}}"
-    },
-    "twitter": {
-      "enabled": false,
-      "api_key": "{{TWITTER_API_KEY}}",
-      "api_secret": "{{TWITTER_API_SECRET}}",
-      "access_token": "{{TWITTER_ACCESS_TOKEN}}",
-      "access_secret": "{{TWITTER_ACCESS_SECRET}}"
-    },
-    "whoop": {
-      "enabled": false,
-      "client_id": "{{WHOOP_CLIENT_ID}}",
-      "client_secret": "{{WHOOP_CLIENT_SECRET}}"
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "anthropic/claude-opus-4-6",
+        "fallbacks": ["anthropic/claude-sonnet-4-5", "openai/gpt-5.2"]
+      },
+      "heartbeat": {
+        "every": "30m",
+        "model": "anthropic/claude-haiku-4-5",
+        "lightContext": true
+      },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      },
+      "contextPruning": {
+        "mode": "cache-ttl",
+        "ttl": "5m",
+        "keepLastAssistants": 3,
+        "softTrimRatio": 0.3,
+        "hardClearRatio": 0.5,
+        "minPrunableToolChars": 50000
+      },
+      "compaction": {
+        "mode": "safeguard",
+        "reserveTokensFloor": 50000,
+        "memoryFlush": {
+          "enabled": true,
+          "softThresholdTokens": 12000
+        }
+      }
     }
   },
-  "mesh": {
-    "providers": {
-      "claude-code": {"enabled": true, "priority": 1},
-      "codex": {"enabled": false, "priority": 2},
-      "gemini": {"enabled": false, "priority": 3},
-      "perplexity": {"enabled": false, "priority": 4}
+  "cron": {
+    "maxConcurrentRuns": 3
+  },
+  "tools": {
+    "profile": "full",
+    "web": {
+      "search": { "enabled": true },
+      "fetch": { "enabled": true }
     },
-    "cost_routing": {
-      "daily_budget": 10.00,
-      "prefer_local": true,
-      "fallback_chain": ["claude-code", "codex", "gemini"]
+    "loopDetection": {
+      "enabled": true,
+      "warningThreshold": 6,
+      "criticalThreshold": 12
     }
-  }
+  },
+  "NOTE": "This is a template. The install script adapts it to your setup."
 }

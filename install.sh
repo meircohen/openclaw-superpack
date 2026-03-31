@@ -316,6 +316,11 @@ fi
 
 echo ""
 echo "============================================"
+echo ""
+echo "  ⚠️  IMPORTANT: Make sure your default model points to a real provider"
+echo "     (e.g. anthropic/claude-opus-4-6), NOT a local proxy."
+echo "     Local proxies that go offline will break ALL background crons."
+echo ""
 echo "  Installation complete!"
 echo "  Restart your OpenClaw gateway, then say:"
 echo "  'What can you do?' to see all features"
