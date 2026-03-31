@@ -1,0 +1,12 @@
+{
+  "name": "provider-health-check",
+  "description": "Tests all AI provider APIs for degradation or outages",
+  "schedule": { "kind": "cron", "expr": "0 9 * * *", "tz": "{{TIMEZONE}}" },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Run a quick provider health check. For each API provider, make a minimal test call or check recent error logs. Report any degraded or down providers.",
+    "model": "anthropic/claude-haiku-4-5",
+    "timeoutSeconds": 300
+  },
+  "sessionTarget": "isolated"
+}

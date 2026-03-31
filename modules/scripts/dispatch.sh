@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# dispatch.sh -- Auto-dispatch pending handoffs to Claude Code or Codex via CLI
+# dispatch.sh — Auto-dispatch pending handoffs to Claude Code or Codex via CLI
 #
 # Usage:
 #   bash scripts/dispatch.sh check       # Check for pending handoffs, dispatch if found
@@ -13,11 +13,11 @@
 #   - Agent stats logging: verdicts and durations tracked per agent
 #
 # This is the bridge that makes the mesh truly autonomous.
-# The orchestrator's heartbeat calls `dispatch.sh check` to auto-execute pending handoffs.
+# OpenClaw's heartbeat calls `dispatch.sh check` to auto-execute pending handoffs.
 
 set -euo pipefail
 
-WORKSPACE="${OPENCLAW_WORKSPACE:-$HOME/.openclaw/workspace}"
+WORKSPACE="$HOME/.openclaw/workspace"
 HANDOFFS_DIR="$WORKSPACE/shared/handoffs"
 DISPATCH_LOG="$WORKSPACE/shared/dispatch-log"
 DISPATCH_RUNS="$WORKSPACE/shared/dispatch-runs"
@@ -44,7 +44,7 @@ set -- "${ARGS[@]+"${ARGS[@]}"}"
 ACTION="${1:-check}"
 
 # ============================================================
-# inject_context -- Prepend relevant context to a dispatch prompt
+# inject_context — Prepend relevant context to a dispatch prompt
 # ============================================================
 inject_context() {
   local system="$1"
@@ -103,7 +103,7 @@ is_quiet_priority() {
 }
 
 # ============================================================
-# dispatch_claude_code -- Run a task via Claude Code CLI
+# dispatch_claude_code — Run a task via Claude Code CLI
 # ============================================================
 dispatch_claude_code() {
   local prompt="$1"
@@ -131,7 +131,7 @@ dispatch_claude_code() {
   context_block=$(inject_context "claude-code" "$agent" "$prompt")
 
   # Build the full prompt with startup context
-  local full_prompt="Read $HOME/.openclaw/workspace/shared/CLAUDE-CODE-STARTUP.md first, then read $HOME/.openclaw/workspace/shared/ROUTING.md for routing rules. Check $HOME/.openclaw/workspace/shared/corrections/claude-code.md for corrections to avoid.
+  local full_prompt="Read ~/.openclaw/workspace/shared/CLAUDE-CODE-STARTUP.md first, then read ~/.openclaw/workspace/shared/ROUTING.md for routing rules. Check ~/.openclaw/workspace/shared/corrections/claude-code.md for corrections to avoid.
 
 ${context_block:+$context_block
 
@@ -139,7 +139,7 @@ ${context_block:+$context_block
 
 $prompt
 
-When done, write a summary of what you did to $HOME/.openclaw/workspace/shared/dispatch-runs/$run_id.done"
+When done, write a summary of what you did to ~/.openclaw/workspace/shared/dispatch-runs/$run_id.done"
 
   # Run non-interactively
   claude -p "$full_prompt" \
@@ -161,7 +161,7 @@ When done, write a summary of what you did to $HOME/.openclaw/workspace/shared/d
 }
 
 # ============================================================
-# dispatch_codex -- Run a task via Codex CLI
+# dispatch_codex — Run a task via Codex CLI
 # ============================================================
 dispatch_codex() {
   local prompt="$1"
@@ -188,7 +188,7 @@ dispatch_codex() {
   context_block=$(inject_context "codex" "$agent" "$prompt")
 
   # Build the full prompt with startup context
-  local full_prompt="Read $HOME/.openclaw/workspace/shared/CODEX-STARTUP.md first, then read $HOME/.openclaw/workspace/shared/ROUTING.md for routing rules. Check $HOME/.openclaw/workspace/shared/corrections/codex.md for corrections to avoid.
+  local full_prompt="Read ~/.openclaw/workspace/shared/CODEX-STARTUP.md first, then read ~/.openclaw/workspace/shared/ROUTING.md for routing rules. Check ~/.openclaw/workspace/shared/corrections/codex.md for corrections to avoid.
 
 ${context_block:+$context_block
 
@@ -196,7 +196,7 @@ ${context_block:+$context_block
 
 $prompt
 
-When done, write a summary of what you did to $HOME/.openclaw/workspace/shared/dispatch-runs/$run_id.done"
+When done, write a summary of what you did to ~/.openclaw/workspace/shared/dispatch-runs/$run_id.done"
 
   # Run non-interactively with workspace write access
   codex exec \
@@ -217,7 +217,7 @@ When done, write a summary of what you did to $HOME/.openclaw/workspace/shared/d
 }
 
 # ============================================================
-# check -- Find pending handoffs and auto-dispatch
+# check — Find pending handoffs and auto-dispatch
 # ============================================================
 check_and_dispatch() {
   local dispatched=0
@@ -246,7 +246,7 @@ check_and_dispatch() {
 
         local run_id=$(dispatch_claude_code "$task_prompt" "$handoff_basename")
 
-        # Mark handoff as dispatched (not complete -- we verify after)
+        # Mark handoff as dispatched (not complete — we verify after)
         jq '.status = "dispatched" | .dispatched_at = "'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'" | .dispatch_run_id = "'"$run_id"'" | .dispatch_agent = (.agent // .dispatch_agent)' "$handoff" > "${handoff}.tmp" && mv "${handoff}.tmp" "$handoff"
 
         echo "Dispatched '$title' to Claude Code (run: $run_id)"
@@ -271,7 +271,7 @@ check_and_dispatch() {
         ;;
 
       openclaw)
-        # Orchestrator handles its own handoffs via heartbeat, skip
+        # OpenClaw handles its own handoffs via heartbeat, skip
         ;;
 
       *)
@@ -288,7 +288,7 @@ check_and_dispatch() {
 }
 
 # ============================================================
-# check_completed -- Verify dispatched runs finished
+# check_completed — Verify dispatched runs finished
 # ============================================================
 check_completed() {
   local checked=0
@@ -314,7 +314,7 @@ check_completed() {
       fi
     fi
 
-    # Process finished -- check if it wrote a .done file
+    # Process finished — check if it wrote a .done file
     local title=$(jq -r '.title // "untitled"' "$handoff")
     local target=$(jq -r '.to // "unknown"' "$handoff")
     local dispatched_at=$(jq -r '.dispatched_at // ""' "$handoff")
@@ -347,7 +347,7 @@ check_completed() {
         if [[ "$target" == "codex" ]]; then alt_system="claude-code"; fi
 
         if [[ -n "$alt_system" ]]; then
-          echo "[$run_id] VERIFICATION FAILED -- falling back to $alt_system"
+          echo "[$run_id] VERIFICATION FAILED — falling back to $alt_system"
           local fb_prompt="Pick up handoff: $title"
           local fb_run_id
           case "$alt_system" in
@@ -377,8 +377,8 @@ check_completed() {
       echo "{\"run_id\":\"$run_id\",\"completed\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"status\":\"complete\",\"verdict\":\"$verdict\",\"duration\":$duration}" \
         >> "$DISPATCH_LOG/$(date +%Y-%m-%d).jsonl"
     else
-      # Process exited but no .done file -- possible failure
-      echo "[$run_id] FINISHED (no .done marker): $title -- needs manual review"
+      # Process exited but no .done file — possible failure
+      echo "[$run_id] FINISHED (no .done marker): $title — needs manual review"
 
       local is_error=false
       if [[ -f "$DISPATCH_RUNS/$run_id.result.json" ]]; then
@@ -414,7 +414,7 @@ check_completed() {
           fi
         fi
 
-        # Both systems failed -- escalate
+        # Both systems failed — escalate
         jq '.status = "failed" | .failed_at = "'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"' "$handoff" > "${handoff}.tmp" && mv "${handoff}.tmp" "$handoff"
 
         # Write escalation
@@ -427,7 +427,7 @@ check_completed() {
           --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
           '{timestamp: $ts, run_id: $run_id, title: $title, priority: $priority, reason: $reason, status: "open"}' \
           > "$esc_file"
-        echo "[$run_id] ESCALATED to orchestrator as P2"
+        echo "[$run_id] ESCALATED to OpenClaw as P2"
 
         notify_completion "$run_id" "$target" "$agent_name" "Task failed after dispatch fallback attempts: $title" "fail" "false"
       fi
@@ -440,7 +440,7 @@ check_completed() {
 }
 
 # ============================================================
-# run -- Directly dispatch a task
+# run — Directly dispatch a task
 # ============================================================
 run_direct() {
   local target="${1:-}"
@@ -460,7 +460,7 @@ run_direct() {
 }
 
 # ============================================================
-# status -- Show all running/recent dispatches
+# status — Show all running/recent dispatches
 # ============================================================
 show_status() {
   echo "=== Active Dispatches ==="
@@ -484,7 +484,7 @@ show_status() {
       local rid=$(echo "$line" | jq -r '.run_id // "?"')
       local tgt=$(echo "$line" | jq -r '.target // "?"')
       local st=$(echo "$line" | jq -r '.status // .completed // "?"')
-      echo "  $rid -> $tgt ($st)"
+      echo "  $rid → $tgt ($st)"
     done < "$today_log"
   else
     echo "  (no dispatches today)"
@@ -530,10 +530,10 @@ case "$ACTION" in
     ;;
   *)
     echo "Usage: dispatch.sh <check|verify|run|status> [--timeout <secs>] [--no-fallback]" >&2
-    echo "  check  -- Auto-dispatch pending handoffs + verify completed" >&2
-    echo "  verify -- Only check completed dispatches" >&2
-    echo "  run    -- Direct dispatch: run <claude-code|codex> \"prompt\" [--agent <slug>]" >&2
-    echo "  status -- Show active + recent dispatches" >&2
+    echo "  check  — Auto-dispatch pending handoffs + verify completed" >&2
+    echo "  verify — Only check completed dispatches" >&2
+    echo "  run    — Direct dispatch: run <claude-code|codex> \"prompt\" [--agent <slug>]" >&2
+    echo "  status — Show active + recent dispatches" >&2
     echo "" >&2
     echo "Flags:" >&2
     echo "  --timeout <secs>  Timeout before fallback (default: 120)" >&2

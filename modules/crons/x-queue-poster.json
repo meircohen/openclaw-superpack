@@ -1,0 +1,11 @@
+{
+  "name": "x-queue-poster",
+  "description": "Posts queued tweets at optimal engagement times",
+  "schedule": { "kind": "cron", "expr": "0 9,13,18 * * *", "tz": "{{TIMEZONE}}" },
+  "payload": {
+    "kind": "systemEvent",
+    "text": "X Queue Poster: Check if there are queued tweets to post. Run: python3 ~/.openclaw/workspace/scripts/x-tools.py queue-post. If a tweet was posted, note it. If queue is empty, do nothing."
+  },
+  "sessionTarget": "main",
+  "requires": "twitter_api"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "auto-heal",
+  "description": "Detects and auto-fixes common system issues",
+  "schedule": { "kind": "cron", "expr": "0 8,20 * * *", "tz": "{{TIMEZONE}}" },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Run the auto-heal system: check for stale processes, broken crons, disk space, memory usage. Fix what you can automatically. Report anything that needs manual attention.",
+    "model": "anthropic/claude-sonnet-4-5",
+    "timeoutSeconds": 120
+  },
+  "sessionTarget": "isolated"
+}

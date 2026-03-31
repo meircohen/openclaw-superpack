@@ -1,0 +1,10 @@
+{
+  "name": "weekly-pattern-recognition",
+  "description": "Analyzes last 7 days of sessions for recurring themes and opportunities",
+  "schedule": { "kind": "cron", "expr": "0 9 * * 1", "tz": "{{TIMEZONE}}" },
+  "payload": {
+    "kind": "systemEvent",
+    "text": "Weekly pattern recognition scan — analyze last 7 days of sessions for recurring themes, decision loops, stress indicators, and cross-domain opportunities."
+  },
+  "sessionTarget": "main"
+}

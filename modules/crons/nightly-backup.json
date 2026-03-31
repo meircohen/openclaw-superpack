@@ -1,0 +1,11 @@
+{
+  "name": "nightly-backup",
+  "description": "Backs up configs, memory, and workspace",
+  "schedule": { "kind": "cron", "expr": "0 3 * * *", "tz": "{{TIMEZONE}}" },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Run nightly backup. Git commit workspace changes. Report backup size and any errors.",
+    "timeoutSeconds": 600
+  },
+  "sessionTarget": "isolated"
+}

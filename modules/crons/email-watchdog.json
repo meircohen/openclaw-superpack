@@ -1,0 +1,13 @@
+{
+  "name": "email-watchdog",
+  "description": "Monitors inbox for priority emails and alerts you",
+  "schedule": { "kind": "cron", "expr": "0 8 * * *", "tz": "{{TIMEZONE}}" },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Run email watchdog. Check inbox for priority emails from the last 24 hours. Report urgent items immediately.",
+    "model": "anthropic/claude-haiku-4-5",
+    "timeoutSeconds": 300
+  },
+  "sessionTarget": "isolated",
+  "requires": "gmail_access"
+}

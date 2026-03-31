@@ -277,3 +277,46 @@ fi
 echo ""
 echo -e "${BOLD}${CYAN}Your AI army is ready. Welcome to the Superpack.${NC}"
 echo ""
+
+# --- Claude Peers MCP (inter-session messaging) ---
+echo ""
+echo "=== Installing Claude Peers MCP ==="
+if command -v bun >/dev/null 2>&1 && command -v claude >/dev/null 2>&1; then
+  if [ ! -d "$HOME/claude-peers-mcp" ]; then
+    git clone https://github.com/louislva/claude-peers-mcp.git "$HOME/claude-peers-mcp" 2>/dev/null
+    cd "$HOME/claude-peers-mcp" && bun install 2>/dev/null
+    claude mcp add --scope user --transport stdio claude-peers -- bun "$HOME/claude-peers-mcp/server.ts" 2>/dev/null
+    echo "  ✓ Claude Peers installed"
+  else
+    echo "  ✓ Claude Peers already installed"
+  fi
+else
+  echo "  ⚠ Skipping Claude Peers (needs bun + claude)"
+fi
+
+# --- Coasts (container isolation) ---
+echo ""
+echo "=== Installing Coasts ==="
+if command -v docker >/dev/null 2>&1; then
+  if ! command -v coast >/dev/null 2>&1; then
+    eval "$(curl -fsSL https://coasts.dev/install)" 2>/dev/null
+    echo "  ✓ Coasts installed"
+    echo "  → Run 'coast daemon install' to start at login"
+  else
+    echo "  ✓ Coasts already installed ($(coast --version 2>/dev/null))"
+  fi
+  # Copy Coastfile template
+  if [ -f "templates/Coastfile" ] && [ ! -f "$WORKSPACE/Coastfile" ]; then
+    cp templates/Coastfile "$WORKSPACE/Coastfile"
+    echo "  ✓ Coastfile template copied to workspace"
+  fi
+else
+  echo "  ⚠ Skipping Coasts (Docker not installed)"
+fi
+
+echo ""
+echo "============================================"
+echo "  Installation complete!"
+echo "  Restart your OpenClaw gateway, then say:"
+echo "  'What can you do?' to see all features"
+echo "============================================"

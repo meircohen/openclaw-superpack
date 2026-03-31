@@ -1,0 +1,12 @@
+{
+  "name": "memory-maintenance",
+  "description": "Reviews notes, updates memory blocks, consolidates completions",
+  "schedule": { "kind": "cron", "expr": "30 8 * * *", "tz": "{{TIMEZONE}}" },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Run daily memory maintenance: review yesterday's notes, extract key patterns, update memory blocks (active_guidance, pending_items, session_patterns). Consolidate completions.",
+    "model": "anthropic/claude-sonnet-4-5",
+    "timeoutSeconds": 300
+  },
+  "sessionTarget": "isolated"
+}

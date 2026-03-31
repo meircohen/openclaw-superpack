@@ -1,0 +1,10 @@
+{
+  "name": "intelligence-sweep",
+  "description": "Scans HN, GitHub, Reddit, Bluesky, PyPI, npm for AI ecosystem updates",
+  "schedule": { "kind": "cron", "expr": "0 2,8,14,20 * * *", "tz": "{{TIMEZONE}}" },
+  "payload": {
+    "kind": "systemEvent",
+    "text": "Intelligence sweep: Run the full intelligence pipeline. Execute: cd ~/.openclaw/workspace/intelligence && python3 collector.py && python3 filter.py && python3 act.py && python3 digest.py. Then check urgent.json — if it exists and has items, send each one via Telegram immediately."
+  },
+  "sessionTarget": "main"
+}

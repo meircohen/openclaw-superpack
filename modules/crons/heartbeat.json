@@ -1,0 +1,10 @@
+{
+  "name": "heartbeat",
+  "description": "Runs health checks, processes handoffs, maintains memory every 30 minutes",
+  "schedule": { "kind": "every", "everyMs": 1800000 },
+  "payload": {
+    "kind": "systemEvent",
+    "text": "Read HEARTBEAT.md if it exists (workspace context). Follow it strictly. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK."
+  },
+  "sessionTarget": "main"
+}

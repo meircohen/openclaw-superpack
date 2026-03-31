@@ -1,0 +1,12 @@
+{
+  "name": "btc-intelligence",
+  "description": "Daily crypto market analysis with Fear/Greed index",
+  "schedule": { "kind": "cron", "expr": "0 8 * * *", "tz": "{{TIMEZONE}}" },
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Fetch BTC market data, analyze trends, check Fear/Greed index, mempool status. If significant moves (>5%) or important news, report. Focus on actionable intelligence, not raw data.",
+    "model": "anthropic/claude-sonnet-4-5",
+    "timeoutSeconds": 300
+  },
+  "sessionTarget": "isolated"
+}

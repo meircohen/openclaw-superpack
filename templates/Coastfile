@@ -1,0 +1,49 @@
+# OpenClaw Mesh — Coastfile Template
+# Isolated environments for parallel agent workstreams
+#
+# Usage:
+#   coast build                    Build the coast image
+#   coast run agent-1              Start an isolated instance
+#   coast run agent-2              Start another in parallel
+#   coast checkout agent-1         Bind canonical ports to agent-1
+#   coast ui                       Open observability dashboard
+
+[coast]
+name = "openclaw-mesh"
+runtime = "dind"
+private_paths = [
+    "node_modules",
+    ".cache",
+    "__pycache__",
+    ".venv",
+]
+
+[coast.setup]
+packages = [
+    "nodejs",
+    "npm",
+    "python3",
+    "py3-pip",
+    "git",
+    "bash",
+    "curl",
+    "jq",
+    "socat",
+]
+run = [
+    "npm install -g @anthropic-ai/claude-code || true",
+    "npm install -g @openai/codex || true",
+    "pip3 install requests httpx fastmcp 2>/dev/null || true",
+]
+
+[ports]
+dev = 3000
+api = 8080
+
+[egress]
+gateway = 18789
+ollama = 11434
+
+# Uncomment to run Claude Code inside the container
+# [agent_shell]
+# command = "cd /workspace; exec claude --dangerously-skip-permissions"
