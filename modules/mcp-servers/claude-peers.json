@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "claude-peers": {
+      "command": "npx",
+      "args": ["-y", "claude-peers"],
+      "env": {}
+    }
+  }
+}

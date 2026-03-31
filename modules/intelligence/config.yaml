@@ -1,0 +1,160 @@
+sources:
+  hn_algolia:
+    enabled: true
+    url: https://hn.algolia.com/api/v1/search
+    min_points: 50
+    keywords:
+    - MCP
+    - agent
+    - LLM
+    - Claude
+    - OpenAI
+    - tool use
+    - autonomous
+    - multi-agent
+    - RAG
+    - openClaw
+    interval_hours: 6
+  simon_willison:
+    enabled: true
+    url: https://simonwillison.net/atom/everything/
+    interval_hours: 6
+  github_trending:
+    enabled: true
+    url: https://github.com/trending/python
+    interval_hours: 12
+  arxiv:
+    enabled: true
+    url: https://arxiv.org/rss/cs.MA
+    interval_hours: 12
+  arxiv_ai:
+    enabled: true
+    url: https://arxiv.org/rss/cs.AI
+    interval_hours: 12
+  bluesky:
+    enabled: true
+    feed_uri: at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/with-friends
+    accounts:
+    - simonwillison.net
+    - karpathy.bsky.social
+    - swyx.io
+    - natolambert.bsky.social
+    - hardmaru.bsky.social
+    - alexalbert.bsky.social
+    - emollick.bsky.social
+    - lmsys.bsky.social
+    - yann-lecun.bsky.social
+    - jimfan.bsky.social
+    - huggingface.bsky.social
+    - osanseviero.bsky.social
+    - elvis.bsky.social
+    - philschmid.bsky.social
+    - darioamodei.bsky.social
+    - latentspace.bsky.social
+    limit_per_run: 50
+    interval_hours: 6
+  awesome_mcp_servers:
+    enabled: true
+    url: https://github.com/punkpeye/awesome-mcp-servers/commits/main.atom
+    interval_hours: 12
+  reddit_localllama:
+    enabled: true
+    url: https://www.reddit.com/r/LocalLLaMA/hot/.rss
+    min_upvotes: 100
+    interval_hours: 6
+  reddit_claudeai:
+    enabled: true
+    url: https://www.reddit.com/r/ClaudeAI/hot/.rss
+    min_upvotes: 100
+    interval_hours: 6
+  reddit_machinelearning:
+    enabled: true
+    url: https://www.reddit.com/r/MachineLearning/hot/.rss
+    min_upvotes: 100
+    interval_hours: 6
+  producthunt:
+    enabled: true
+    url: https://www.producthunt.com/feed
+    interval_hours: 6
+  npm_mcp:
+    enabled: true
+    url: https://registry.npmjs.org/-/v1/search?text=mcp+server&size=20&quality=0.5&popularity=0.5&maintenance=0.5
+    interval_hours: 12
+  pypi_updates:
+    enabled: true
+    url: https://pypi.org/rss/updates.xml
+    interval_hours: 12
+  github_releases:
+    enabled: true
+    feeds:
+    - https://github.com/anthropics/anthropic-sdk-python/releases.atom
+    - https://github.com/ollama/ollama/releases.atom
+    - https://github.com/openai/openai-python/releases.atom
+    - https://github.com/modelcontextprotocol/servers/releases.atom
+    interval_hours: 12
+scoring:
+  keyword_weights:
+    MCP: 3
+    model context protocol: 3
+    OpenClaw: 5
+    tool use: 2
+    multi-agent: 2
+    agent: 1
+    LLM: 1
+    Claude: 2
+    autonomous: 2
+    RAG: 1
+    embedding: 1
+    open source: 1
+    github-trending: 1
+    metadata-only: 1
+    noise: 1
+    language-filter: 1
+    python: 1
+    github: 1
+    meta: 1
+    generic: 1
+    no-content: 1
+    weekly: 1
+    ai-agents: 1
+    ai: 1
+    reddit: 1
+    research: 1
+    evaluation: 1
+    emotional memory: 1
+    generative ai: 1
+    localllama: 1
+    server: 1
+    ai_agents: 1
+    productivity: 1
+    gpu: 1
+    brain-visualizer: 1
+    library: 1
+    claudeai: 1
+    framework: 1
+    cli: 1
+    kagent: 1
+    development: 1
+    security: 1
+    machinelearning: 1
+    processing: 1
+    pipeline: 1
+  pass2_threshold: 7
+  min_hn_points: 50
+  max_item_age_hours: 72
+llm:
+  pass1_model: claude-haiku-4-5
+  pass2_model: claude-sonnet-4-5
+  max_tokens_per_run: 50000
+  batch_min_size: 5
+  batch_max_age_hours: 2
+paths:
+  items: items
+  raw: raw
+  signals: signals
+  digest: digest.md
+  hot: hot.json
+  seen: seen.json
+  usage: usage.json
+  status: status.json
+  jobs: jobs

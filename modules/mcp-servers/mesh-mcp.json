@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "ai-mesh": {
+      "command": "python3",
+      "args": ["$HOME/.openclaw/workspace/mesh/mcp_server.py"],
+      "env": {
+        "PYTHONPATH": "$HOME/.openclaw/workspace"
+      }
+    }
+  }
+}
