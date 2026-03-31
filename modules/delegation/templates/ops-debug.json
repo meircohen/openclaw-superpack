@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ops-debug",
+  "description": "Debug an operational issue. Diagnose, fix, verify, document.",
+  "type": "object",
+  "required": ["type", "what"],
+  "properties": {
+    "type": {
+      "const": "ops-debug"
+    },
+    "what": {
+      "type": "string",
+      "description": "Description of what's broken -- symptoms, not guesses"
+    },
+    "logs": {
+      "type": "string",
+      "description": "Path to relevant log files or 'witness' to check witness logs"
+    },
+    "expected": {
+      "type": "string",
+      "description": "What should be happening instead"
+    },
+    "urgency": {
+      "type": "string",
+      "enum": ["now", "can-wait"],
+      "default": "can-wait"
+    },
+    "scope": {
+      "type": "string",
+      "description": "Limit investigation to specific files/services (prevents scope creep)"
+    },
+    "rollback_plan": {
+      "type": "string",
+      "description": "How to undo the fix if it makes things worse"
+    }
+  },
+  "additionalProperties": false,
+  "_anti_patterns": [
+    "Verify dependencies first. Test every tool/API with a 5-min smoke test before building on it.",
+    "Config overwrites on restart. Never assume config persists -- verify after gateway restart.",
+    "Auto-fix NEVER touches user config. Alert instead of fixing.",
+    "Report success WITHOUT verification. Never say 'fixed' without checking actual state."
+  ],
+  "_agent": "sonnet-4",
+  "_timeout": 600
+}

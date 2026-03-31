@@ -1,0 +1,66 @@
+# OpenClaw (Oz) — Orchestrator
+system:
+  name: openclaw
+  display_name: "OpenClaw (Oz)"
+  role: "Gateway orchestrator, 24/7 autonomous operations"
+  version: "Claude 3.5 Sonnet (via API)"
+
+auth:
+  method: api_key
+  provider: anthropic
+  plan: "Pay-per-token API"
+  api_key_env: ANTHROPIC_API_KEY
+  cost_model: per_token
+  pricing:
+    input_per_1k: 0.003
+    output_per_1k: 0.015
+    currency: USD
+
+runtime:
+  gateway: "http://localhost:18789"
+  config_files:
+    - ~/.openclaw/openclaw.json
+  auth_profiles: ~/.openclaw/agents/main/agent/auth-profiles.json
+  context_window: 200000
+
+capabilities:
+  primary:
+    - orchestration
+    - background_tasks
+    - monitoring
+    - cron_jobs
+    - heartbeat
+    - telegram_bridge
+    - twitter_x
+    - deployment
+    - autonomous_operations
+  secondary:
+    - quick_answers
+    - mcp_actions
+    - image_analysis
+    - task_routing
+    - handoff_management
+  cannot:
+    - heavy_coding  # NEVER use for coding
+    - long_context_analysis
+    - deep_reasoning
+    - multimodal_video
+
+cost_routing:
+  priority_for:
+    quick_answers: 1  # Already running — marginal cost
+    background: 1     # Only system that can
+    monitoring: 1     # Only system that can
+  never_use_for:
+    - coding  # HARD RULE — route to Claude Code/Codex
+    - long_context
+    - deep_reasoning
+
+limits:
+  daily: null  # Budget-based, not count-based
+  monthly_budget: null  # Set based on usage
+  notes: "Pay-per-token — minimize usage. Route heavy tasks to subscription systems."
+
+health_check:
+  command: "curl -s -o /dev/null -w '%{http_code}' http://localhost:18789/health"
+  expected: "200"

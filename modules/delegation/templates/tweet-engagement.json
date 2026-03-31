@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "tweet-engagement",
+  "description": "Reply to specific tweets with the user's voice. Targets must be pre-selected.",
+  "type": "object",
+  "required": ["type", "targets"],
+  "properties": {
+    "type": {
+      "const": "tweet-engagement"
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "required": ["id", "author", "topic"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Tweet ID to reply to"
+          },
+          "author": {
+            "type": "string",
+            "description": "@handle of tweet author"
+          },
+          "topic": {
+            "type": "string",
+            "description": "1-sentence summary of what the tweet says"
+          },
+          "relationship": {
+            "type": "string",
+            "enum": ["follows-us", "we-follow", "mutual", "none"],
+            "default": "none",
+            "description": "Follow relationship -- 'follows-us' gets priority (distribution multiplier)"
+          }
+        }
+      }
+    },
+    "style": {
+      "type": "string",
+      "enum": ["text-only", "with-media", "freeze-card"],
+      "default": "text-only"
+    },
+    "voice": {
+      "type": "string",
+      "enum": ["default", "tech", "crossover"],
+      "default": "default"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10,
+      "default": 3,
+      "description": "How many targets to engage (picks top N from targets array)"
+    },
+    "log_to": {
+      "type": "string",
+      "default": "state/x-engagement-log.jsonl"
+    }
+  },
+  "additionalProperties": false,
+  "_anti_patterns": [
+    "Don't iterate on media styles. Ask preference first or default to text-only.",
+    "Never acknowledge without adding value -- state a take or skip.",
+    "Don't reply to every post from a high-reach account. Quality over frequency."
+  ],
+  "_agent": "haiku-4.5",
+  "_timeout": 300
+}

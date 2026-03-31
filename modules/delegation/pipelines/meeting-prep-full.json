@@ -1,0 +1,47 @@
+{
+  "pipeline": "meeting-prep-full",
+  "description": "Pull today's calendar, research attendees, draft talking points, deliver brief.",
+  "steps": [
+    {
+      "id": "calendar",
+      "type": "research-brief",
+      "brief": {
+        "type": "research-brief",
+        "question": "What meetings are on today's calendar? For each: time, attendees, topic/title, any prior email context with attendees.",
+        "depth": "quick",
+        "sources": ["email", "memory"],
+        "output": "bullet-points"
+      },
+      "output_key": "meetings"
+    },
+    {
+      "id": "attendee_research",
+      "type": "research-brief",
+      "depends_on": "calendar",
+      "brief": {
+        "type": "research-brief",
+        "question": "For each attendee in today's meetings: what do we know about them? Check email history, Fireflies transcripts, memory, and LinkedIn. What did we last discuss? Any open items?",
+        "depth": "standard",
+        "sources": ["email", "memory", "fireflies", "web"],
+        "output": "report"
+      },
+      "output_key": "attendee_intel"
+    },
+    {
+      "id": "talking_points",
+      "type": "research-brief",
+      "depends_on": "attendee_research",
+      "brief": {
+        "type": "research-brief",
+        "question": "Based on the attendee research and meeting topics, draft 3-5 talking points per meeting. Include: what to ask, what to share, any commitments to reference, and one strategic angle the user might not have considered.",
+        "depth": "quick",
+        "sources": ["docs"],
+        "output": "bullet-points",
+        "output_file": "state/meeting-brief-today.md"
+      },
+      "output_key": "brief"
+    }
+  ],
+  "on_failure": "continue",
+  "timeout": 900
+}

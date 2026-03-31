@@ -1,0 +1,54 @@
+{
+  "pipeline": "bug-to-pr",
+  "description": "Reproduce a bug, write a failing test, spawn a code agent to fix it, verify, and open a PR.",
+  "steps": [
+    {
+      "id": "reproduce",
+      "type": "ops-debug",
+      "brief": {
+        "type": "ops-debug",
+        "what": "{{bug_description}}",
+        "expected": "{{expected_behavior}}",
+        "urgency": "can-wait",
+        "scope": "Reproduce only — do NOT fix. Write a failing test that demonstrates the bug. Output: test file path and the exact failure message."
+      },
+      "output_key": "reproduction",
+      "input_vars": ["bug_description", "expected_behavior", "repo"]
+    },
+    {
+      "id": "fix",
+      "type": "code-task",
+      "depends_on": "reproduce",
+      "brief": {
+        "type": "code-task",
+        "repo": "{{repo}}",
+        "scope": "Fix the bug demonstrated by the failing test at {{reproduce.output}}. The test must pass. Do not modify the test.",
+        "tests": true,
+        "agent": "auto",
+        "branch": "fix/{{branch_name}}",
+        "pr": false,
+        "timeout": 600
+      },
+      "output_key": "fix_result",
+      "input_vars": ["repo", "branch_name"]
+    },
+    {
+      "id": "pr",
+      "type": "code-task",
+      "depends_on": "fix",
+      "brief": {
+        "type": "code-task",
+        "repo": "{{repo}}",
+        "scope": "Open a PR for the current branch. Title: 'Fix: {{bug_description}}'. Body: include the reproduction steps, root cause, and what was changed. Link to any relevant issue.",
+        "tests": false,
+        "pr": true,
+        "timeout": 120
+      },
+      "output_key": "pr_url",
+      "input_vars": ["repo", "bug_description"]
+    }
+  ],
+  "on_failure": "stop",
+  "timeout": 1200,
+  "_note": "Stops on failure because each step depends on the previous. No point opening a PR if fix failed."
+}

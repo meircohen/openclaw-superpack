@@ -1,0 +1,61 @@
+system:
+  name: Ollama
+  id: ollama
+  type: local
+  emoji: 🦙
+
+access:
+  api_base: http://localhost:11434
+  api_compatible: openai
+  auth: none
+  cli: ollama
+
+models:
+  - id: llama3.1:8b
+    context_window: 131072
+    max_tokens: 8192
+    capabilities: [text, code, summarization]
+    quality: medium
+  - id: nomic-embed-text:latest
+    context_window: 2048
+    capabilities: [embeddings]
+    quality: high
+
+cost:
+  model: free
+  tier: "$0 (local, unlimited)"
+  notes: "Runs on local hardware. Zero API cost. Zero latency. Data never leaves machine."
+
+capabilities:
+  - text generation
+  - code generation (basic)
+  - summarization
+  - classification
+  - embeddings (nomic-embed-text)
+  - privacy-sensitive tasks
+
+limitations:
+  - no web search
+  - no tool use
+  - quality lower than cloud models
+  - limited to installed model sizes
+  - speed depends on hardware (Apple Silicon)
+
+routing:
+  best_for:
+    - embeddings
+    - text classification
+    - simple summaries
+    - bulk batch processing
+    - privacy-sensitive data
+    - prototyping/testing
+  not_for:
+    - complex reasoning
+    - web research
+    - production code generation
+    - tasks requiring >8B model quality
+
+health_check:
+  method: api_ping
+  url: http://localhost:11434/api/tags
+  expected: 200

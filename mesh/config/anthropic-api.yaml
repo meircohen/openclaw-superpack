@@ -1,0 +1,97 @@
+# Anthropic API (Direct) — Pay-per-token fallback
+system:
+  name: anthropic-api
+  display_name: "Anthropic API"
+  role: "Direct API access to Claude models — fallback when CLI unavailable"
+  version: "Claude Opus 4.6 / Sonnet 4.5 / Haiku 4.5"
+
+auth:
+  method: api_key
+  provider: anthropic
+  plan: "Pay-per-token"
+  api_key_env: ANTHROPIC_API_KEY
+  api_key_source: "~/.openclaw/auth-profiles.json (anthropic:default)"
+  cost_model: per_token
+
+runtime:
+  endpoint: "https://api.anthropic.com/v1"
+  config_files:
+    - ~/.openclaw/auth-profiles.json
+  context_window: 1000000  # Opus 4.6 — 1M tokens
+  default_context: 200000
+
+models:
+  opus-4.6:
+    name: "Claude Opus 4.6"
+    context: 1000000
+    pricing:
+      input: 0.015    # per 1K tokens
+      output: 0.075   # per 1K tokens
+    use_for: "Complex reasoning, coding — ONLY when CLI unavailable"
+  opus-4.5:
+    name: "Claude Opus 4.5"
+    context: 200000
+    pricing:
+      input: 0.015
+      output: 0.075
+    use_for: "Legacy tasks requiring Opus 4.5 specifically"
+  sonnet-4.5:
+    name: "Claude Sonnet 4.5"
+    context: 200000
+    pricing:
+      input: 0.003
+      output: 0.015
+    use_for: "Cost-effective API tasks"
+  sonnet-4:
+    name: "Claude Sonnet 4"
+    context: 200000
+    pricing:
+      input: 0.003
+      output: 0.015
+    use_for: "Budget API tasks"
+  haiku-4.5:
+    name: "Claude Haiku 4.5"
+    context: 200000
+    pricing:
+      input: 0.0008
+      output: 0.004
+    use_for: "Cheapest Anthropic option — simple tasks only"
+
+capabilities:
+  primary:
+    - coding
+    - reasoning
+    - analysis
+    - document_generation
+  secondary:
+    - multimodal
+    - long_context
+  cannot:
+    - background_tasks
+    - mcp_access
+    - file_operations
+    - bash_execution
+
+cost_routing:
+  priority_for:
+    coding: 10        # EXPENSIVE — use Claude Code CLI instead
+    research: 10      # Use Perplexity instead
+    reasoning: 8      # Use Codex instead
+    long_context: 8   # Use Gemini instead
+    quick_answers: 8  # Use OpenClaw instead
+    multimodal: 8     # Use Gemini instead
+  never_use_for:
+    - background_monitoring
+  notes: "LAST RESORT for Anthropic models — Claude Code CLI does the same for $0"
+
+limits:
+  daily: null
+  monthly: null
+  alert_threshold_daily: 5.00  # Alert if >$5/day
+  notes: "Pay-per-token — EXPENSIVE. Always prefer Claude Code CLI ($0 subscription)"
+
+health_check:
+  type: api_ping
+  endpoint: "https://api.anthropic.com/v1/messages"
+  method: "POST"
+  expected: "api_key required or 200"

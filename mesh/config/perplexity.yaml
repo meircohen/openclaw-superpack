@@ -1,0 +1,89 @@
+# Perplexity — Research Agent
+system:
+  name: perplexity
+  display_name: "Perplexity"
+  role: "Web research, real-time information"
+  version: "sonar-pro"
+
+auth:
+  method: mixed
+  provider: perplexity
+  plan: "Perplexity Max ($200/mo)"
+  api_key_env: PERPLEXITY_API_KEY
+  cost_model: mixed
+
+access_methods:
+  browser_automation:
+    script: scripts/perplexity_uc.py
+    cost: free
+    unlimited: true
+    capabilities: [search, research, deep_research]
+    profile_dir: ~/.openclaw/perplexity_uc_profile/
+    notes: "Headless browser automation — FREE and unlimited"
+    priority: 1  # Use first
+
+  mcp_server:
+    package: "@perplexity-ai/mcp-server"
+    available_via: [claude-code, codex]
+    cost: free  # Covered by subscription
+    tools:
+      - perplexity_search
+      - perplexity_ask
+      - perplexity_research
+      - perplexity_reason
+    priority: 2  # Use second
+
+  direct_api:
+    base_url: "https://api.perplexity.ai"
+    cost: "$50/mo credit (TRACK CAREFULLY)"
+    monthly_budget: 50.00
+    currency: USD
+    priority: 3  # LAST RESORT
+    warning: "Burns monthly API credit — use browser or MCP first"
+
+runtime:
+  context_window: null  # Varies by method
+
+capabilities:
+  primary:
+    - web_search
+    - deep_research
+    - real_time_news
+    - citation_backed_answers
+    - reasoning
+  secondary:
+    - fact_checking
+    - competitive_analysis
+    - market_research
+  cannot:
+    - coding
+    - file_operations
+    - background_tasks
+
+cost_routing:
+  priority_for:
+    research: 1  # PRIMARY (browser method)
+  never_use_for:
+    - coding
+    - file_operations
+    - background_monitoring
+
+limits:
+  browser: null  # unlimited
+  mcp: null  # covered by host subscription
+  api:
+    monthly_credit: 50.00
+    track_in: mesh/usage.json
+    alert_at: 40.00  # Alert at 80% usage
+  notes: "Browser automation is free. MCP is free via subscription. API burns $50/mo credit."
+
+health_check:
+  browser:
+    command: "python3 scripts/perplexity_uc.py --test"
+    expected: "connection successful"
+  mcp:
+    command: "check MCP server status in Claude Code"
+    expected: "server connected"
+  api:
+    command: "curl -s -o /dev/null -w '%{http_code}' -H 'Authorization: Bearer $PERPLEXITY_API_KEY' https://api.perplexity.ai/chat/completions"
+    expected: "200 or 401 (valid key format)"

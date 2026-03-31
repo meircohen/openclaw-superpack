@@ -1,0 +1,12 @@
+# OpenClaw Superpack - Codex Configuration Template
+# Copy to ~/.codex/config.toml and customize
+
+[model]
+name = "o4-mini"
+
+[workspace]
+path = "$HOME/.openclaw/workspace"
+
+[instructions]
+# Add your CODEX-MESH.md bootstrap path here
+system_prompt_file = "$HOME/.openclaw/workspace/mesh/bootstrap/CODEX-MESH.md"

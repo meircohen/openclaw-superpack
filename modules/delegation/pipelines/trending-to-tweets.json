@@ -1,0 +1,36 @@
+{
+  "pipeline": "trending-to-tweets",
+  "description": "Research trending AI topics, generate hot takes, post them.",
+  "steps": [
+    {
+      "id": "research",
+      "type": "research-brief",
+      "brief": {
+        "type": "research-brief",
+        "question": "What are the top 3 trending AI/tech topics in the last 24 hours that the user could have a unique take on?",
+        "depth": "quick",
+        "sources": ["web"],
+        "output": "bullet-points",
+        "constraints": "Focus on AI agents, infrastructure, developer tools, or tech business. Skip hype-only stories."
+      },
+      "output_key": "topics"
+    },
+    {
+      "id": "draft",
+      "type": "tweet-original",
+      "depends_on": "research",
+      "brief": {
+        "type": "tweet-original",
+        "topic": "{{research.output}}",
+        "angle": "hot-take",
+        "voice": "tech",
+        "media": "none"
+      },
+      "output_key": "tweets",
+      "review_gate": true,
+      "_note": "Review drafted tweets before posting. Set review_gate:true to pause here."
+    }
+  ],
+  "on_failure": "stop",
+  "timeout": 600
+}

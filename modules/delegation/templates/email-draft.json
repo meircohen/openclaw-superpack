@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "email-draft",
+  "description": "Draft an email in the user's voice. Always runs humanizer before output.",
+  "type": "object",
+  "required": ["type", "to", "context"],
+  "properties": {
+    "type": {
+      "const": "email-draft"
+    },
+    "to": {
+      "type": "string",
+      "description": "Recipient name or email address"
+    },
+    "cc": {
+      "type": "string",
+      "description": "CC recipients (comma-separated)"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Email subject. Agent generates if omitted."
+    },
+    "context": {
+      "type": "string",
+      "description": "What this email is about -- include prior thread context if replying"
+    },
+    "tone": {
+      "type": "string",
+      "enum": ["professional", "casual", "follow-up", "warm-intro", "cold-outreach"],
+      "default": "professional"
+    },
+    "account": {
+      "type": "string",
+      "default": "{{USER_EMAIL}}",
+      "description": "Which email account to send from"
+    },
+    "action": {
+      "type": "string",
+      "enum": ["draft", "send-after-approval"],
+      "default": "draft",
+      "description": "'draft' saves to Gmail drafts. 'send-after-approval' queues for user review."
+    },
+    "reply_to_message_id": {
+      "type": "string",
+      "description": "Gmail message ID if this is a reply to an existing thread"
+    },
+    "attachments": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "File paths to attach"
+    }
+  },
+  "additionalProperties": false,
+  "_anti_patterns": [
+    "Run humanizer before any draft. Check all names/dates are correct.",
+    "Never send without user approval. 'draft' is the safe default.",
+    "Auto-fix NEVER touches user config. Alert instead of fixing."
+  ],
+  "_agent": "sonnet-4",
+  "_timeout": 300
+}

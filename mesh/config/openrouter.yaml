@@ -1,0 +1,136 @@
+# OpenRouter — Model Aggregator (100+ models)
+system:
+  name: openrouter
+  display_name: "OpenRouter"
+  role: "Access 100+ models including DeepSeek, Llama, Mistral, Qwen, and free models"
+  version: "Multiple (aggregator)"
+
+auth:
+  method: api_key
+  provider: openrouter
+  plan: "Pay-per-token (varies by model, some FREE)"
+  api_key_env: OPENROUTER_API_KEY
+  api_key_source: "~/.openclaw/auth-profiles.json (openrouter:default)"
+  cost_model: per_token  # varies wildly by model
+
+runtime:
+  endpoint: "https://openrouter.ai/api/v1"
+  api_compatible: openai  # OpenAI-compatible API
+  config_files:
+    - ~/.openclaw/auth-profiles.json
+  context_window: 128000  # varies by model
+  default_context: 32000
+
+models:
+  # --- FREE MODELS ---
+  deepseek-r1-free:
+    name: "DeepSeek R1 (free)"
+    context: 64000
+    pricing:
+      input: 0
+      output: 0
+    use_for: "Free reasoning — rate limited but $0"
+    tier: free
+  llama-4-scout-free:
+    name: "Llama 4 Scout (free)"
+    context: 128000
+    pricing:
+      input: 0
+      output: 0
+    use_for: "Free general purpose — rate limited"
+    tier: free
+  qwen-2.5-coder-free:
+    name: "Qwen 2.5 Coder (free)"
+    context: 32000
+    pricing:
+      input: 0
+      output: 0
+    use_for: "Free coding model"
+    tier: free
+  mistral-small-free:
+    name: "Mistral Small (free)"
+    context: 32000
+    pricing:
+      input: 0
+      output: 0
+    use_for: "Free fast model"
+    tier: free
+
+  # --- PAID MODELS (cheap) ---
+  deepseek-r1:
+    name: "DeepSeek R1"
+    context: 64000
+    pricing:
+      input: 0.0005
+      output: 0.002
+    use_for: "Cheap deep reasoning"
+    tier: paid_cheap
+  llama-4-maverick:
+    name: "Llama 4 Maverick"
+    context: 128000
+    pricing:
+      input: 0.0002
+      output: 0.0006
+    use_for: "Very cheap general purpose"
+    tier: paid_cheap
+  mistral-large:
+    name: "Mistral Large"
+    context: 128000
+    pricing:
+      input: 0.002
+      output: 0.006
+    use_for: "European model, good for multilingual"
+    tier: paid_moderate
+  qwen-3-coder:
+    name: "Qwen 3 Coder"
+    context: 128000
+    pricing:
+      input: 0.001
+      output: 0.003
+    use_for: "Cheap coding alternative"
+    tier: paid_cheap
+
+capabilities:
+  primary:
+    - exotic_models       # Models not available elsewhere
+    - free_models         # $0 rate-limited models
+    - cheap_fallback      # Budget alternative to premium APIs
+  secondary:
+    - coding
+    - reasoning
+    - analysis
+  cannot:
+    - background_tasks
+    - mcp_access
+    - file_operations
+    - bash_execution
+    - ultra_long_context
+
+cost_routing:
+  priority_for:
+    coding: 6            # Free models available, but prefer CLI agents
+    reasoning: 6         # DeepSeek R1 free is decent
+    quick_answers: 5     # Free models work for quick answers
+    long_context: 8      # Limited context on most models
+    multimodal: 10       # Not a strength
+    research: 10         # Use Perplexity
+  never_use_for:
+    - background_monitoring
+    - research
+  notes: "PRIMARY for: free models ($0), exotic models (DeepSeek/Llama/Qwen), cheap fallback"
+
+limits:
+  free_models:
+    rate_limit: "varies (typically 10-50 req/min)"
+    notes: "Free models are rate-limited but cost $0"
+  paid_models:
+    daily: null
+    monthly: null
+  alert_threshold_daily: 2.00
+  notes: "Use free models first. Paid models are cheap but add up."
+
+health_check:
+  type: api_ping
+  endpoint: "https://openrouter.ai/api/v1/models"
+  method: "GET"
+  expected: "200"

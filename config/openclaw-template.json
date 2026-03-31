@@ -1,0 +1,47 @@
+{
+  "version": "1.0",
+  "user": {
+    "name": "{{USER_NAME}}",
+    "email": "{{USER_EMAIL}}",
+    "timezone": "{{TIMEZONE}}",
+    "location": "{{USER_LOCATION}}"
+  },
+  "workspace": {
+    "path": "$HOME/.openclaw/workspace",
+    "agents_path": "$HOME/.openclaw/agents",
+    "mesh_enabled": true,
+    "intelligence_enabled": true,
+    "heartbeat_enabled": true
+  },
+  "integrations": {
+    "telegram": {
+      "enabled": false,
+      "bot_token": "{{TELEGRAM_BOT_TOKEN}}"
+    },
+    "twitter": {
+      "enabled": false,
+      "api_key": "{{TWITTER_API_KEY}}",
+      "api_secret": "{{TWITTER_API_SECRET}}",
+      "access_token": "{{TWITTER_ACCESS_TOKEN}}",
+      "access_secret": "{{TWITTER_ACCESS_SECRET}}"
+    },
+    "whoop": {
+      "enabled": false,
+      "client_id": "{{WHOOP_CLIENT_ID}}",
+      "client_secret": "{{WHOOP_CLIENT_SECRET}}"
+    }
+  },
+  "mesh": {
+    "providers": {
+      "claude-code": {"enabled": true, "priority": 1},
+      "codex": {"enabled": false, "priority": 2},
+      "gemini": {"enabled": false, "priority": 3},
+      "perplexity": {"enabled": false, "priority": 4}
+    },
+    "cost_routing": {
+      "daily_budget": 10.00,
+      "prefer_local": true,
+      "fallback_chain": ["claude-code", "codex", "gemini"]
+    }
+  }
+}

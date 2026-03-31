@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "research-brief",
+  "description": "Research a topic and produce a structured output.",
+  "type": "object",
+  "required": ["type", "question"],
+  "properties": {
+    "type": {
+      "const": "research-brief"
+    },
+    "question": {
+      "type": "string",
+      "description": "The research question -- specific beats broad"
+    },
+    "depth": {
+      "type": "string",
+      "enum": ["quick", "standard", "deep"],
+      "default": "standard",
+      "description": "quick=5min/3 sources, standard=15min/8 sources, deep=30min+/15+ sources"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["web", "email", "memory", "docs", "github", "fireflies"]
+      },
+      "default": ["web"],
+      "description": "Where to look"
+    },
+    "output": {
+      "type": "string",
+      "enum": ["summary", "report", "bullet-points"],
+      "default": "summary"
+    },
+    "output_file": {
+      "type": "string",
+      "description": "Path to write output. If omitted, returns in response."
+    },
+    "constraints": {
+      "type": "string",
+      "description": "Any restrictions (e.g. 'only sources from 2025+', 'focus on competitors')"
+    }
+  },
+  "additionalProperties": false,
+  "_anti_patterns": [
+    "Post numbers without verification. Dates, timelines, metrics -- if it can be fact-checked, check it.",
+    "Optimize without measuring. Complete data > partial data > no data.",
+    "Check local/installed alternatives before cloud APIs."
+  ],
+  "_agent": "sonnet-4",
+  "_timeout": 600
+}

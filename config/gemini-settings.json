@@ -1,0 +1,5 @@
+{
+  "model": "gemini-2.5-pro",
+  "workspace": "$HOME/.openclaw/workspace",
+  "system_prompt_file": "$HOME/.openclaw/workspace/mesh/bootstrap/GEMINI-MESH.md"
+}

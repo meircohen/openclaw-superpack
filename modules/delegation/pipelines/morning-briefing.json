@@ -1,0 +1,61 @@
+{
+  "pipeline": "morning-briefing",
+  "description": "Daily morning digest: email + calendar + news + portfolio -> synthesized brief.",
+  "steps": [
+    {
+      "id": "email_scan",
+      "type": "research-brief",
+      "brief": {
+        "type": "research-brief",
+        "question": "Scan emails from the last 12 hours. Flag: (1) urgent items needing response, (2) scheduling threads that are stalled >3 days, (3) intros not yet actioned, (4) unanswered emails from known contacts >24h. Group by priority.",
+        "depth": "quick",
+        "sources": ["email"],
+        "output": "bullet-points"
+      },
+      "output_key": "email_digest"
+    },
+    {
+      "id": "calendar_scan",
+      "type": "research-brief",
+      "brief": {
+        "type": "research-brief",
+        "question": "What's on the calendar today and this week? Flag conflicts, back-to-back meetings with no buffer, and any meetings without context (no agenda/notes).",
+        "depth": "quick",
+        "sources": ["memory"],
+        "output": "bullet-points"
+      },
+      "output_key": "calendar_digest",
+      "parallel_with": "email_scan"
+    },
+    {
+      "id": "news_scan",
+      "type": "research-brief",
+      "brief": {
+        "type": "research-brief",
+        "question": "Top 5 AI/tech/business headlines from the last 12 hours relevant to: AI agents, developer tools, fintech, or topics the user is actively tracking.",
+        "depth": "quick",
+        "sources": ["web"],
+        "output": "bullet-points"
+      },
+      "output_key": "news_digest",
+      "parallel_with": "email_scan"
+    },
+    {
+      "id": "synthesize",
+      "type": "research-brief",
+      "depends_on": ["email_scan", "calendar_scan", "news_scan"],
+      "brief": {
+        "type": "research-brief",
+        "question": "Synthesize the email, calendar, and news digests into a single morning brief. Format: (1) Top 3 priorities for today, (2) Calendar overview, (3) Emails needing attention, (4) Headlines worth knowing. Keep it under 500 words.",
+        "depth": "quick",
+        "sources": ["docs"],
+        "output": "summary",
+        "output_file": "state/morning-brief-today.md"
+      },
+      "output_key": "morning_brief"
+    }
+  ],
+  "on_failure": "continue",
+  "timeout": 600,
+  "_note": "First 3 steps run in parallel. Synthesis waits for all three."
+}

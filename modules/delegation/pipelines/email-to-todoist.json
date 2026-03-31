@@ -1,0 +1,50 @@
+{
+  "pipeline": "email-to-todoist",
+  "description": "Scan recent emails for action items, create Todoist tasks, draft follow-up replies.",
+  "steps": [
+    {
+      "id": "scan",
+      "type": "research-brief",
+      "brief": {
+        "type": "research-brief",
+        "question": "What action items exist in emails received in the last 24 hours? Include: sender, subject, what's being asked, urgency, and message ID.",
+        "depth": "quick",
+        "sources": ["email"],
+        "output": "bullet-points"
+      },
+      "output_key": "action_items"
+    },
+    {
+      "id": "tasks",
+      "type": "ops-debug",
+      "depends_on": "scan",
+      "brief": {
+        "type": "ops-debug",
+        "what": "Create Todoist tasks for each action item found. Deduplicate against existing open tasks.",
+        "expected": "Each action item has a corresponding Todoist task with correct due date and priority.",
+        "urgency": "can-wait",
+        "scope": "Todoist task creation only — do not modify emails or send anything"
+      },
+      "output_key": "tasks_created",
+      "_note": "Using ops-debug type because this is a 'make the system do the right thing' task. The sub-agent uses Todoist API."
+    },
+    {
+      "id": "drafts",
+      "type": "email-draft",
+      "depends_on": "scan",
+      "brief": {
+        "type": "email-draft",
+        "to": "{{scan.output}}",
+        "context": "Draft brief acknowledgment replies for emails that need a response. Use thread context from scan step.",
+        "tone": "professional",
+        "account": "{{USER_EMAIL}}",
+        "action": "draft"
+      },
+      "output_key": "drafts_created",
+      "parallel_with": "tasks",
+      "_note": "Tasks and drafts can run in parallel since they don't depend on each other."
+    }
+  ],
+  "on_failure": "continue",
+  "timeout": 900
+}

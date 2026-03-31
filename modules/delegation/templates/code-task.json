@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "code-task",
+  "description": "Delegate a coding task to Codex or Claude Code sub-agent.",
+  "type": "object",
+  "required": ["type", "repo", "scope"],
+  "properties": {
+    "type": {
+      "const": "code-task"
+    },
+    "repo": {
+      "type": "string",
+      "description": "Absolute path to the repo/directory to work in"
+    },
+    "scope": {
+      "type": "string",
+      "description": "What to build or fix -- be specific about files, functions, behavior"
+    },
+    "tests": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to write/run tests. Default true."
+    },
+    "test_command": {
+      "type": "string",
+      "description": "Command to run tests (e.g. 'npm test', 'pytest'). Agent will infer if omitted."
+    },
+    "agent": {
+      "type": "string",
+      "enum": ["codex", "claude-code", "auto"],
+      "default": "auto",
+      "description": "Which coding agent. 'auto' picks based on task complexity."
+    },
+    "branch": {
+      "type": "string",
+      "description": "Git branch to work on. Creates if doesn't exist."
+    },
+    "pr": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to open a PR after completing the task"
+    },
+    "timeout": {
+      "type": "integer",
+      "default": 600,
+      "minimum": 60,
+      "maximum": 3600,
+      "description": "Timeout in seconds"
+    },
+    "context_files": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Additional files to include in the agent's context"
+    }
+  },
+  "additionalProperties": false,
+  "_anti_patterns": [
+    "Write failing test first. Don't start fixing without reproducing.",
+    "Verify dependencies exist before building on them.",
+    "Test before committing. Read the artifact, verify key data.",
+    "No scope creep. If config > 1 file for a simple concept, you're over-engineering."
+  ],
+  "_agent": "auto",
+  "_timeout": 600
+}

@@ -1,0 +1,76 @@
+# Claude Code — Primary Coding Agent
+system:
+  name: claude-code
+  display_name: "Claude Code"
+  role: "Primary coding agent, interactive sessions"
+  version: "Opus 4.6"
+
+auth:
+  method: subscription
+  provider: anthropic
+  plan: "Anthropic Max"
+  cost_model: flat_rate
+  marginal_cost: 0
+
+runtime:
+  cli: claude
+  config_files:
+    - ~/.claude/settings.json
+    - ~/.claude.json
+  working_directory: ~/.openclaw/workspace
+  context_window: 1000000  # 1M with Opus 4.6
+  default_context: 200000
+
+capabilities:
+  primary:
+    - coding
+    - debugging
+    - refactoring
+    - testing
+    - architecture
+    - pull_requests
+    - code_review
+    - file_operations
+  secondary:
+    - research_via_mcp
+    - document_creation
+    - bash_execution
+    - agent_spawning
+  cannot:
+    - background_tasks
+    - 24_7_monitoring
+    - autonomous_cron
+
+mcp_servers:
+  - perplexity
+  - slack
+  - gmail
+  - google_calendar
+  - notion
+  - cloudflare
+  - crypto_com
+  - scrapling
+  - gitnexus
+  - context_mode
+
+cost_routing:
+  priority_for:
+    coding: 1
+    research: 2  # via MCP
+    reasoning: 3
+    long_context: 2
+    quick_answers: 3
+    multimodal: 3
+  never_use_for:
+    - background_monitoring
+
+limits:
+  daily: null  # unlimited
+  monthly: null
+  notes: "Flat rate subscription — use freely"
+
+health_check:
+  command: "claude --version"
+  expected: "exit code 0"
+
+last_refresh: "2026-03-30 12:03:40"

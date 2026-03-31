@@ -1,0 +1,101 @@
+# xAI / Grok — Ultra-long context & fast coding
+system:
+  name: xai
+  display_name: "xAI / Grok"
+  role: "Ultra-long context (2M tokens), fast coding, direct API"
+  version: "Grok-4 / Grok-4-fast / Grok-4.20-beta"
+
+auth:
+  method: api_key
+  provider: xai
+  plan: "Pay-per-token"
+  api_key_env: XAI_API_KEY
+  api_key_source: "~/.openclaw/auth-profiles.json (xai:default)"
+  cost_model: per_token
+
+runtime:
+  endpoint: "https://api.x.ai/v1"
+  api_compatible: openai  # OpenAI-compatible API
+  config_files:
+    - ~/.openclaw/auth-profiles.json
+  context_window: 2000000  # Grok-4-fast — 2M tokens! LARGEST IN MESH
+  default_context: 256000
+  cli_wrapper: mesh/tools/grok.sh
+
+models:
+  grok-4:
+    name: "Grok-4"
+    context: 256000
+    pricing:
+      input: 0.003    # estimated
+      output: 0.015   # estimated
+    use_for: "General tasks, balanced speed/quality"
+  grok-4-fast:
+    name: "Grok-4-fast"
+    context: 2000000   # 2M TOKENS — LARGEST CONTEXT IN THE MESH
+    pricing:
+      input: 0.002    # estimated — fast variant is cheaper
+      output: 0.010   # estimated
+    use_for: "KILLER: 2M context, fast inference, ultra-long documents"
+  grok-4.20-beta:
+    name: "Grok-4.20-beta"
+    context: 2000000
+    pricing:
+      input: 0.003
+      output: 0.015
+    use_for: "Beta model — latest capabilities, 2M context"
+  grok-3:
+    name: "Grok-3"
+    context: 131072
+    pricing:
+      input: 0.003
+      output: 0.015
+    use_for: "Legacy Grok model"
+  grok-code-fast-1:
+    name: "grok-code-fast-1"
+    context: 131072
+    pricing:
+      input: 0.001
+      output: 0.005
+    use_for: "Fast coding — cheapest code-optimized model"
+
+capabilities:
+  primary:
+    - ultra_long_context   # 2M tokens — UNIQUE IN MESH
+    - fast_coding          # grok-code-fast-1
+    - reasoning
+  secondary:
+    - coding
+    - analysis
+    - document_generation
+  cannot:
+    - background_tasks
+    - mcp_access
+    - file_operations
+    - bash_execution
+    - web_search
+
+cost_routing:
+  priority_for:
+    long_context: 1    # PRIMARY for >1M tokens (2M context!)
+    coding: 7          # Use CLI agents first, but grok-code-fast-1 is cheap
+    reasoning: 7       # Use Codex first
+    quick_answers: 7   # Use free options first
+    multimodal: 10     # Not a strength
+    research: 10       # Use Perplexity
+  never_use_for:
+    - background_monitoring
+    - research
+  notes: "KILLER for ultra-long context (2M). Use grok-code-fast-1 for cheap fast coding."
+
+limits:
+  daily: null
+  monthly: null
+  alert_threshold_daily: 5.00
+  notes: "Pay-per-token — check pricing. Primary value is 2M context window."
+
+health_check:
+  type: api_ping
+  endpoint: "https://api.x.ai/v1/models"
+  method: "GET"
+  expected: "api_key required or 200"
