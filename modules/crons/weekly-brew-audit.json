@@ -1,0 +1,10 @@
+{
+  "name": "weekly-brew-audit",
+  "schedule": {"kind": "cron", "expr": "0 10 ? * MON", "tz": "America/New_York"},
+  "sessionTarget": "isolated",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Run a Homebrew audit: brew update && brew outdated && brew doctor. Report any outdated packages, warnings, or issues.",
+    "timeoutSeconds": 120
+  }
+}

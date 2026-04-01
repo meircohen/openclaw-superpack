@@ -1,6 +1,8 @@
 # OpenClaw Superpack
 
-**One command to transform a fresh OpenClaw into a fully-powered AI agent system.** Multi-model mesh routing, intelligence pipeline, 55 specialized agents, task delegation, autonomous operations -- everything you need to run an AI-powered operation with zero employees.
+**One command to transform a fresh OpenClaw into a fully-powered AI agent system.** Multi-model mesh routing, intelligence pipeline, 55 specialized agents, 100 skills, 20 cron jobs, task delegation, autonomous operations -- everything you need to run an AI-powered operation with zero employees.
+
+> **v1.4** -- 100 skills, 20 crons, 55 agents, Home Assistant, Apple ecosystem, health tracking, X automation, and more. See [CHANGELOG.md](CHANGELOG.md).
 
 ## Install
 

@@ -1,0 +1,9 @@
+{
+  "name": "quarterly-tax-reminder",
+  "schedule": {"kind": "cron", "expr": "0 9 1 1,4,6,9 *", "tz": "America/New_York"},
+  "sessionTarget": "main",
+  "payload": {
+    "kind": "systemEvent",
+    "text": "TAX REMINDER: Quarterly estimated tax deadline approaching. Review filing status, K-1s, and estimated payments."
+  }
+}

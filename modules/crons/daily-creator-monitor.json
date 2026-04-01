@@ -1,0 +1,10 @@
+{
+  "name": "daily-creator-monitor",
+  "schedule": {"kind": "cron", "expr": "0 11 * * *", "tz": "America/New_York"},
+  "sessionTarget": "isolated",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Monitor key X/Twitter accounts for high-engagement posts. Report top engagement opportunities.",
+    "timeoutSeconds": 300
+  }
+}

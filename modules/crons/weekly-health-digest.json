@@ -1,0 +1,11 @@
+{
+  "name": "weekly-health-digest",
+  "schedule": {"kind": "cron", "expr": "0 8 ? * MON", "tz": "America/New_York"},
+  "sessionTarget": "isolated",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Sync health data and generate weekly digest with sleep, recovery, workout trends and actionable insights.",
+    "timeoutSeconds": 300
+  },
+  "delivery": {"mode": "announce"}
+}
