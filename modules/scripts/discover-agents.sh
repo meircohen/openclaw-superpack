@@ -1,6 +1,6 @@
 #!/bin/bash
-# discover-agents.sh -- Scan all registered agents and their specialties
-# The orchestrator runs this to know who's available for delegation
+# discover-agents.sh — Scan all registered agents and their specialties
+# Ozy runs this to know who's available for delegation
 
 CONFIG="$HOME/.openclaw/openclaw.json"
 echo "=== Registered Agents ==="
@@ -21,7 +21,7 @@ for agent in agents:
     model = agent.get('model', 'default')
     workspace = agent.get('workspace', '')
     agent_dir = agent.get('agentDir', '')
-
+    
     # Try to find SOUL.md for specialty info
     soul_paths = [
         os.path.join(workspace, 'SOUL.md') if workspace else '',
@@ -29,21 +29,21 @@ for agent in agents:
         os.path.expanduser(f'~/.openclaw/workspace-{agent_id}/SOUL.md'),
         os.path.expanduser(f'~/.openclaw/workspaces/{agent_id}/SOUL.md'),
     ]
-
+    
     soul_content = ''
     for sp in soul_paths:
         if sp and os.path.exists(sp):
             with open(sp) as sf:
                 soul_content = sf.read()[:500]
             break
-
+    
     # Try to find IDENTITY.md
     identity_paths = [
         os.path.join(workspace, 'IDENTITY.md') if workspace else '',
         os.path.expanduser(f'~/.openclaw/workspace-{agent_id}/IDENTITY.md'),
         os.path.expanduser(f'~/.openclaw/workspaces/{agent_id}/IDENTITY.md'),
     ]
-
+    
     identity_content = ''
     for ip in identity_paths:
         if ip and os.path.exists(ip):

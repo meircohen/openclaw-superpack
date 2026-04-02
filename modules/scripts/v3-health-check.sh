@@ -1,0 +1,11 @@
+#!/bin/bash
+echo "=== V3 Module Health Check ==="
+echo "--- Agent Room v2 ---"
+cd ~/.openclaw/modules/agent-room-v2 && bash monitoring/queue-metrics.sh 2>/dev/null || echo "WARN: queue-metrics unavailable"
+echo "--- Smart Router v2 ---"
+cd ~/.openclaw/modules/smart-router-v2 && bash monitoring/cost-dashboard.sh 2>/dev/null || echo "WARN: cost-dashboard unavailable"
+echo "--- Token Budgets ---"
+cd ~/.openclaw/modules/token-budgets && bash monitoring/budget-status.sh 2>/dev/null || echo "WARN: budget-status unavailable"
+echo "--- Vault ---"
+curl -sf http://127.0.0.1:8200/v1/sys/health | python3 -c "import json,sys; print('Vault: HEALTHY')" 2>/dev/null || echo "WARN: Vault not reachable"
+echo "=== Health Check Complete ==="

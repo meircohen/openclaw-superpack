@@ -17,7 +17,7 @@
 
 set -euo pipefail
 
-WORKSPACE="$HOME/.openclaw/workspace"
+WORKSPACE="/Users/meircohen/.openclaw/workspace"
 HANDOFFS_DIR="$WORKSPACE/shared/handoffs"
 DISPATCH_LOG="$WORKSPACE/shared/dispatch-log"
 DISPATCH_RUNS="$WORKSPACE/shared/dispatch-runs"
