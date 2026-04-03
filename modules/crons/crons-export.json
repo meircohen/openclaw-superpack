@@ -1,0 +1,435 @@
+[
+  {
+    "id": "33b3e389-9329-4436-8b44-766a7dea724d",
+    "name": "Intelligence Sweep",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 2,8,14,20 * * *",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "main",
+    "payload": {
+      "kind": "systemEvent",
+      "text": "Intelligence sweep: Run the full intelligence pipeline. Execute: cd ~/.openclaw/workspace/intelligence && python3 collector.py && python3 filter.py && python3 act.py && python3 digest.py. Then check urgent.json — if it exists and has items, send each one to Meir via Telegram immediately. Also run python3 trends.py if it's Monday (weekly trend analysis)."
+    }
+  },
+  {
+    "id": "5f40e1a8-f46d-4401-869e-27a7842df231",
+    "name": "gcs-daily-backup",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 2 * * *",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Run GCS daily backup: bash ~/.openclaw/workspace/scripts/gcs-backup.sh. This creates a tarball in ~/.openclaw/workspace/backups/ and does a git commit + push. If it succeeds, reply NO_REPLY. If it fails, report the error.",
+      "timeoutSeconds": 300,
+      "model": "anthropic/claude-opus-4-6",
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "none"
+    }
+  },
+  {
+    "id": "8a310117-9120-43bf-99bf-f9ab5df95beb",
+    "name": "superpack-auto-update",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 3 ? * SUN",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Auto-update the OpenClaw Superpack repo. Steps: 1) cd ~/.openclaw/workspace/openclaw-superpack. 2) Sync skills: copy any new SKILL.md files from ~/.openclaw/skills/ to modules/skills/. 3) Sync crons: export current cron list and update modules/crons/. 4) Sync scripts: copy any new .sh files from workspace/scripts/ to modules/scripts/ (skip anything with PII/tokens). 5) Run PII scan: grep for API keys, tokens, emails, phone numbers, addresses. If PII found, STOP and do NOT commit. 6) If clean: git add -A && git commit -m 'Auto-sync v<date>' && git push. 7) Reply with summary of what changed.",
+      "timeoutSeconds": 300,
+      "model": "anthropic/claude-sonnet-4-5",
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "none"
+    }
+  },
+  {
+    "id": "d35812f7-bd83-4b8f-86ca-a22eca99b30c",
+    "name": "Nightly Backup",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 3 * * *",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Run the nightly backup script: bash ~/.openclaw/workspace/scripts/nightly-backup.sh — Report results (backup size, git push status, Drive upload status, rotation). If anything fails, report the error.",
+      "timeoutSeconds": 1200,
+      "model": "anthropic/claude-opus-4-6"
+    },
+    "delivery": {
+      "mode": "none"
+    }
+  },
+  {
+    "id": "894006e2-af14-47fb-b378-805a8635b782",
+    "name": "whoop-token-refresh",
+    "enabled": true,
+    "schedule": {
+      "kind": "every",
+      "everyMs": 3300000
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Silently refresh the WHOOP token by running: bash scripts/whoop-refresh.sh. If it succeeds, reply NO_REPLY. If it fails, report the error.",
+      "timeoutSeconds": 30,
+      "model": "anthropic/claude-opus-4-6",
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "none"
+    }
+  },
+  {
+    "id": "2cfccb99-18c6-4a5b-b93d-65d3d3fd8145",
+    "name": "email-watchdog-meir",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 8 * * *",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Run Meir's morning email triage. Steps: 1) Run bash scripts/email-check.sh meir to get recent emails. 2) Classify each as: URGENT (needs response today), ACTION (needs response this week), FYI (informational), or SKIP (spam/marketing). 3) For URGENT items: draft a brief reply suggestion. 4) For ACTION items: add to pending_items.md if not already tracked. 5) If nothing urgent, reply NO_REPLY. 6) If urgent items found, send summary to Meir via Telegram with subject lines and suggested actions. Focus on: tax/financial, legal, medical, family, business-critical.",
+      "model": "anthropic/claude-opus-4-6",
+      "timeoutSeconds": 600,
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "announce",
+      "channel": "telegram",
+      "to": "950148415"
+    }
+  },
+  {
+    "id": "8e8d9140-bdc5-49b1-83e8-19a4e746d973",
+    "name": "morning-briefing",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 8 * * *",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "main",
+    "payload": {
+      "kind": "systemEvent",
+      "text": "Morning Briefing: Run bash ~/.openclaw/workspace/scripts/morning-briefing.sh and send the output to Meir via Telegram. This is his daily status update. If it's Shabbat or Yom Tov, suppress and reply HEARTBEAT_OK."
+    }
+  },
+  {
+    "id": "a1f25c88-0271-4e1a-ba9c-882f268eaf4e",
+    "name": "email-watchdog-nechie",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 8 * * *",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Check Nechie's email for urgent items. Run: bash scripts/email-check.sh nechie. If nothing urgent, reply NO_REPLY. If urgent items found, summarize them.",
+      "model": "anthropic/claude-opus-4-6",
+      "timeoutSeconds": 600,
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "announce",
+      "channel": "telegram",
+      "to": "950148415"
+    }
+  },
+  {
+    "id": "c202813a-d99b-436b-b954-84579e074e0b",
+    "name": "auto-heal",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 8,20 * * *",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Run the auto-heal system: `bash scripts/auto-heal/run.sh`. If the output says HEALTHY with no actions, reply NO_REPLY. If it took actions or has items needing review, summarize what happened in 2-3 sentences. If it found items in QUEUE.md needing human review, mention those specifically.",
+      "timeoutSeconds": 120,
+      "model": "anthropic/claude-opus-4-6",
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "none"
+    }
+  },
+  {
+    "id": "de4ff556-470b-45e0-a5b3-251a02affe05",
+    "name": "btc-intelligence",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 8 * * *",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Run BTC intelligence check. Get current Bitcoin price and check for significant moves or news. If nothing notable, reply NO_REPLY. If BTC moved more than 5% or there's major news, summarize.",
+      "timeoutSeconds": 600,
+      "model": "anthropic/claude-opus-4-6",
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "none",
+      "channel": "last"
+    }
+  },
+  {
+    "id": "e07b6394-ea27-4b7f-b71e-910a4b016ae8",
+    "name": "weekly-health-digest",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 8 ? * MON",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Generate a weekly health digest for Meir. Steps: 1) cd ~/.openclaw/workspace/health-sync && npx health-sync sync. 2) Query the SQLite DB for last 7 days of sleep, recovery, workouts, and body measurements. 3) Calculate averages and trends: avg sleep performance, avg recovery score, avg RHR, workout count+total strain. 4) Compare to previous week if data available. 5) Format a clean summary and send to Meir via Telegram. Include actionable insights (e.g. 'recovery trending down, consider rest day').",
+      "timeoutSeconds": 300,
+      "model": "anthropic/claude-opus-4-6",
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "announce",
+      "channel": "telegram",
+      "to": "950148415"
+    }
+  },
+  {
+    "id": "2b90790a-0ca7-4347-97e8-1ce9ecc20acb",
+    "name": "nechie-morning-nudge",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "15 8 * * 1-5",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Send Nechie's morning nudge message. Send an encouraging good morning message via Telegram to Nechie.",
+      "model": "anthropic/claude-opus-4-6",
+      "timeoutSeconds": 600,
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "none",
+      "channel": "telegram",
+      "to": "6630402565",
+      "accountId": "nechie"
+    }
+  },
+  {
+    "id": "0561c747-0b95-440e-8d2a-3b9939a9924f",
+    "name": "memory-daily-maintenance",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "30 8 * * *",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Run daily memory maintenance: bash ~/.openclaw/workspace/scripts/daily-memory-maintenance.sh",
+      "model": "anthropic/claude-opus-4-6",
+      "timeoutSeconds": 300,
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "none"
+    }
+  },
+  {
+    "id": "1e2bde18-ceeb-409e-905c-76edc332bee2",
+    "name": "provider-health-check",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 9 * * *",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Run a quick provider health check. For each API provider (Anthropic, OpenAI, xAI, OpenRouter), make a minimal test call or check recent error logs. Update provider-health.json with current status, success rates, and any issues found. If any provider is degraded or down, note it. Reset daily counters if it's a new day. Keep it fast and token-efficient — just health pings, not full analysis.",
+      "model": "anthropic/claude-opus-4-6",
+      "timeoutSeconds": 300,
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "none",
+      "to": "telegram:950148415"
+    }
+  },
+  {
+    "id": "3a3958c7-0df2-4715-b6df-9577847c9d20",
+    "name": "x-queue-poster",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 9,13,18 * * *",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "main",
+    "payload": {
+      "kind": "systemEvent",
+      "text": "X Queue Poster: Check if there are queued tweets to post. Run: python3 ~/.openclaw/workspace/scripts/x-tools.py queue-post. If a tweet was posted, note it. If queue is empty, do nothing."
+    }
+  },
+  {
+    "id": "f08e4d43-1c09-47fd-bae4-0fa311e92200",
+    "name": "x-growth-weekly-report",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 9 ? * MON",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Run: bash ~/.openclaw/workspace/scripts/x-growth-report.sh\n\nThen: summarize follower delta and top post link, and point to the report file in ~/.openclaw/workspace/skills/x-growth/reports/.",
+      "model": "anthropic/claude-opus-4-6",
+      "timeoutSeconds": 180,
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "announce",
+      "channel": "telegram",
+      "to": "950148415"
+    }
+  },
+  {
+    "id": "d68792ec-199b-4fe5-81d8-9ca2655f6a5c",
+    "name": "weekly-brew-audit",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 10 ? * MON",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Run a Homebrew audit: brew update && brew outdated && brew doctor. Report any outdated packages, warnings, or issues. If everything clean, reply NO_REPLY.",
+      "timeoutSeconds": 120,
+      "model": "anthropic/claude-opus-4-6",
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "none"
+    }
+  },
+  {
+    "id": "e1ef98fe-f7a0-48ee-bafe-0c1c46ee3d6f",
+    "name": "weekly-secrets-scan",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "30 10 ? * MON",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Run a secrets scan on the workspace: grep -rn 'sk-[a-zA-Z0-9]\\{20,\\}\\|AKIA[A-Z0-9]\\{16\\}\\|ghp_[a-zA-Z0-9]\\{36\\}\\|eyJ[a-zA-Z0-9]\\{50,\\}' ~/.openclaw/workspace/ --include='*.md' --include='*.sh' --include='*.py' --include='*.json' --include='*.toml' 2>/dev/null | grep -v '.api-keys\\|.env\\|auth-profiles\\|.whoop-tokens\\|node_modules\\|.git/' | head -20. Also check recent git commits for secrets: cd ~/.openclaw/workspace && git log --oneline -10 --diff-filter=A -- '*.json' '*.env' '*.key'. Report any findings. If clean, reply NO_REPLY.",
+      "timeoutSeconds": 120,
+      "model": "anthropic/claude-opus-4-6",
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "announce",
+      "channel": "telegram",
+      "to": "950148415"
+    }
+  },
+  {
+    "id": "aa7b1c96-e6c0-4adf-8cf2-d56ffb710476",
+    "name": "daily-creator-monitor",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 11 * * *",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "Run daily creator monitor. Check what key accounts posted in last 24h on X: @levelsio @balaborstansen @LibsofTikTok @elikiaxai @sama @kaborstansen. Use twitter CLI: for each account run 'twitter user-posts <username> --json' and check for high-engagement posts (>1000 likes or >100 replies). If any good engagement targets found, create a brief at ~/.openclaw/workspace/briefs/creator-monitor.json with the top 3 opportunities. If nothing notable, reply NO_REPLY.",
+      "timeoutSeconds": 300,
+      "model": "anthropic/claude-opus-4-6",
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "none"
+    }
+  },
+  {
+    "id": "baedc3ae-cb3d-4fca-a383-5494bb6cd366",
+    "name": "x-engagement-scan",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 12 * * *",
+      "tz": "America/New_York",
+      "staggerMs": 300000
+    },
+    "sessionTarget": "isolated",
+    "payload": {
+      "kind": "agentTurn",
+      "message": "You are the X engagement scanner. Your job: find high-value reply targets and create a delegation brief.\n\nWorking directory: /Users/meircohen/.openclaw/workspace\n\n## Steps\n1. Check Shabbos: `bash scripts/time-awareness.sh check-shabbos` — if Shabbos, reply HEARTBEAT_OK\n2. Check recent engagement log: `tail -20 state/x-twitter/x-engagement-log.jsonl` — note what we already replied to\n3. Scan key accounts: `twitter user-posts libsoftiktok --json`, `twitter user-posts levelsio --json` — find posts with engagement potential\n4. Pick 2-3 best targets (high views, our angle is strong, haven't replied yet)\n5. Determine voice: political topics → \"political\", tech topics → \"tech\"\n6. Write a brief to `briefs/auto-engagement.json` in this format:\n```json\n{\"type\":\"tweet-engagement\",\"targets\":[{\"id\":\"...\",\"author\":\"@...\",\"topic\":\"...\"}],\"style\":\"text-only\",\"voice\":\"political\",\"count\":3,\"log_to\":\"state/x-twitter/x-engagement-log.jsonl\"}\n```\n7. Run the delegation router: `bash scripts/delegate.sh tweet-engagement briefs/auto-engagement.json`\n8. The router outputs a complete agent prompt. Execute it yourself — fetch tweets, draft replies, post them.\n9. CRITICAL: No em-dashes (—) in ANY reply. Grep your drafts before posting.\n10. Verify each post went through. Log results.\n\nIf no good targets found, reply HEARTBEAT_OK.",
+      "model": "anthropic/claude-opus-4-6",
+      "timeoutSeconds": 600,
+      "lightContext": true
+    },
+    "delivery": {
+      "mode": "announce",
+      "channel": "telegram",
+      "to": "950148415"
+    }
+  },
+  {
+    "id": "443235b2-dda3-478e-91bc-14b6904c1f39",
+    "name": "quarterly-tax-reminder",
+    "enabled": true,
+    "schedule": {
+      "kind": "cron",
+      "expr": "0 9 1 1,4,6,9 *",
+      "tz": "America/New_York"
+    },
+    "sessionTarget": "main",
+    "payload": {
+      "kind": "systemEvent",
+      "text": "TAX REMINDER: Quarterly estimated tax deadline approaching. Check with CBIZ on filing status, review any outstanding K-1s, confirm estimated payments are scheduled. Send reminder to Meir via Telegram."
+    }
+  }
+]
